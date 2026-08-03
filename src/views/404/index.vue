@@ -1,6 +1,6 @@
 <template>
   <div>
-    <router-view></router-view>
+    <h1>404 Not Found</h1>
   </div>
 </template>
 
@@ -8,6 +8,5 @@
 
 </style>
 
-<script setup>
-
+<script>
 </script>
