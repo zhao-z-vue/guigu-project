@@ -14,10 +14,9 @@ export default defineConfig(({ mode }) => {
       }),
       viteMockServe({
         mockPath: 'mock',
-        enable: mode === 'development', // 改用 mode 判断
         logger: true,
-        localEnabled: true,  // 原来是 command === 'serve'，改成 true
-        prodEnabled: true,   // 新增这行，让生产环境也启用
+        enable: mode === 'development',  // 开发环境用 vite-plugin-mock 中间件
+        // 生产环境 mock 通过 main.js 手动启动 mockProdServer（v3 不支持 prodEnabled）
       }),
     ],
     resolve: {

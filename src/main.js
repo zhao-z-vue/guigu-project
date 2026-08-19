@@ -32,5 +32,12 @@ app.use(globalComponents)
 // 注册pinia
 app.use(pinia)
 
+// 生产环境启动 mock 服务器（动态导入，不影响开发环境）
+if (import.meta.env.PROD) {
+  import('./mockProdServer.js').then(({ setupProdMockServer }) => {
+    setupProdMockServer()
+  })
+}
+
 // 挂载应用
 app.mount('#app')
