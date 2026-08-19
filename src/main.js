@@ -18,26 +18,34 @@ import pinia from './store/index.js'
 // 引入路由鉴权
 import './permisstion.js'
 
-// 创建应用实例
-const app = createApp(App)
+async function bootstrap() {
+  // 生产环境：先加载 mock 服务器
+  // 必须在 app.use(router) 之前完成，否则路由守卫 beforeEach 会提前触发
+  // 导致 userInfo 请求发出时 mock 还没注册，返回 404 提示"请求失败"
+  if (import.meta.env.PROD) {
+    try {
+      const { setupProdMockServer } = await import('./mockProdServer.js')
+      setupProdMockServer()
+    } catch (e) {
+      console.error('mock 加载失败:', e)
+    }
+  }
 
-// 注册插件
-app.use(ElementPlus, {
-  locale: zhCn,
-})
-app.use(router)
-app.use(globalComponents)
-// 注册pinia
-app.use(pinia)
+  // 创建应用实例
+  const app = createApp(App)
 
-// 生产环境：等 mock 服务器加载完成后再挂载应用
-// 避免 onMounted 发请求时 mock 还没注册导致 404
-if (import.meta.env.PROD) {
-  import('./mockProdServer.js')
-    .then(({ setupProdMockServer }) => setupProdMockServer())
-    .catch((e) => console.error('mock 加载失败:', e))
-    .finally(() => app.mount('#app'))
-} else {
-  // 开发环境用 vite-plugin-mock 中间件，直接挂载
+  // 注册插件
+  app.use(ElementPlus, {
+    locale: zhCn,
+  })
+  // 注册 router（触发初始导航，此时 mock 已就绪）
+  app.use(router)
+  app.use(globalComponents)
+  // 注册pinia
+  app.use(pinia)
+
+  // 挂载应用
   app.mount('#app')
 }
+
+bootstrap()
