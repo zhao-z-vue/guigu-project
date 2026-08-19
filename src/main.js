@@ -13,8 +13,6 @@ import globalComponents from './components/index.js'
 import './styles/index.scss'
 // 引入路由
 import router from './router/index.js'
-// 引入axios
-import axios from 'axios'
 // 引入pinia
 import pinia from './store/index.js'
 // 引入路由鉴权
@@ -32,12 +30,14 @@ app.use(globalComponents)
 // 注册pinia
 app.use(pinia)
 
-// 生产环境启动 mock 服务器（动态导入，不影响开发环境）
+// 生产环境：等 mock 服务器加载完成后再挂载应用
+// 避免 onMounted 发请求时 mock 还没注册导致 404
 if (import.meta.env.PROD) {
-  import('./mockProdServer.js').then(({ setupProdMockServer }) => {
-    setupProdMockServer()
-  })
+  import('./mockProdServer.js')
+    .then(({ setupProdMockServer }) => setupProdMockServer())
+    .catch((e) => console.error('mock 加载失败:', e))
+    .finally(() => app.mount('#app'))
+} else {
+  // 开发环境用 vite-plugin-mock 中间件，直接挂载
+  app.mount('#app')
 }
-
-// 挂载应用
-app.mount('#app')

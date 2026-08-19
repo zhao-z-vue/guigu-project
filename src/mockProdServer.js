@@ -9,11 +9,7 @@ import trademarkMock from '../mock/trademark'
 import productAttrMock from '../mock/productAttr'
 
 // 合并所有 mock 数据
-const allMocks = [
-  ...userMock,
-  ...trademarkMock,
-  ...productAttrMock,
-]
+const allMocks = [...userMock, ...trademarkMock, ...productAttrMock]
 
 // ====== 重写 Mock.XHR，把请求头注入到回调 options 里 ======
 Mock.XHR.prototype.__send = Mock.XHR.prototype.send
@@ -32,9 +28,12 @@ Mock.XHR.prototype.send = function () {
 }
 
 // 把带路径参数的 URL 转成正则
+// 例如 '/api/admin/product/baseTrademark/:page/:limit' => /^\/api\/admin\/product\/baseTrademark\/(?<page>[^/?]+)\/(?<limit>[^/?]+)/
 function urlToRegex(url) {
+  // 先转义正则特殊字符（: 不在转义列表里，保持原样）
   const escaped = url.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
-  const withParams = escaped.replace(/\\:(\w+)/g, '(?<$1>[^/?]+)')
+  // 再把 :param 替换为命名捕获组（注意：此处冒号前不需要反斜杠）
+  const withParams = escaped.replace(/:(\w+)/g, '(?<$1>[^/?]+)')
   return new RegExp('^' + withParams)
 }
 
