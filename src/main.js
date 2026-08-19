@@ -15,6 +15,10 @@ import './styles/index.scss'
 import router from './router/index.js'
 // 引入axios
 import axios from 'axios'
+// 引入pinia
+import pinia from './store/index.js'
+// 引入路由鉴权
+import './permisstion.js'
 
 // 创建应用实例
 const app = createApp(App)
@@ -25,6 +29,8 @@ app.use(ElementPlus, {
 })
 app.use(router)
 app.use(globalComponents)
+// 注册pinia
+app.use(pinia)
 
 // 挂载应用
 app.mount('#app')

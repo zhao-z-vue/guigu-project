@@ -9,7 +9,12 @@ export default [
         return {
           code: 200,
           data: {
-            token: 'Admin_Token_123456'
+            token: 'Admin_Token_123456',
+            // 用户拥有的异步路由名（含子路由，用于动态路由注册）
+            routes: [
+              'product', 'productList', 'productSku', 'productTrademark', 'productAttr',
+              'order', 'orderList', 'orderRefund'
+            ]
           }
         }
       } else {
@@ -32,7 +37,12 @@ export default [
             userId: 1,
             username: 'admin',
             avatar: 'https://...',
-            roles: ['管理员']
+            roles: ['管理员'],
+            // 用户拥有的异步路由名（含子路由，用于动态路由注册）
+            routes: [
+              'product', 'productList', 'productSku', 'productTrademark', 'productAttr',
+              'order', 'orderList', 'orderRefund'
+            ]
           }
         }
       } else {
